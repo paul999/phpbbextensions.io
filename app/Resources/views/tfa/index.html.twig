@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% from 'MopaBootstrapBundle::flash.html.twig' import session_flash %}
+
+{% block title %}phpBB Extensions by Paul Sohier{% endblock title %}
+{% block page_header %}{% endblock page_header %}
+
+{% block content %}
+    <div class="col-lg-8">
+        <div class="hero-unit">
+            <h2>{% block headline %}phpBB two factor authentication{% endblock %}</h2>
+            <p>
+                This extension adds support for two factor authentication using several different security keys.
+                Currently, the following security keys are available by default:
+            </p>
+            <ul>
+                <li>U2F (See below)</li>
+                <li>Google authenticator (Or compatible)</li>
+                <li>Backup keys</li>
+            </ul>
+        </div>
+        <h3>Installation/Update/Removing</h3>
+        <p>Like with any extension, upload the package to the ext/ directory of your board. For more information about
+            installation, updating and removing extensions please <a
+                    href="https://www.phpbb.com/extensions/installing/">read this page</a> on phpBB.com </p>
+
+        <h3>Browser support</h3>
+        <p>To implement some of the support authentication methods (Like U2F), it is required to have support for this
+            in your browser. Currently, this extension only support Google Chrome (Version 41 and later) with U2F, with
+            FireFox coming in a later release. Other browsers are currently not suupported with U2F keys. Please note
+            that a secure connection is also required to use U2F.</p>
+
+        <h3>Providing translations</h3>
+        <p>Translations can be provided as pull request to the <a href="https://github.com/paul999/phpbb_2fa">github
+                repository</a>.</p>
+
+        <h2>Adding extra Two Factor modules</h2>
+        <p>This extension can be extended by other extensions to add more Two Factor Authentication modules. A few steps
+            are required to implement extra modules.</p>
+        <p>Please note that I won't be providing support for additional modules provided by other extensions.</p>
+
+        <h4>service.yml</h4>
+        <p>In your service.yml, add a new service with the following definition (If you need more parameters injected,
+            modify this service)</p>
+        <pre><code>
+    acme.tfa.modules.otp:
+        class: acme\tfa\modules\otp
+        arguments:
+            - '@dbal.conn'
+            - '@user'
+            - '@request'
+            - '@template'
+            - '%acme.2fa.tables.tfa_otp_registration%'
+        tags:
+            - { name: paul999.tfa.module }
+            </code>
+        </pre>
+        <p>The DB, user and template dependencies are required if you use the provide abstract class (Which is highly
+            suggested). The table is optional but your module will probably need some table. You should not change the
+            tags definition. The tags are used by the main extension to tell that this is a Two Factor Authentication
+            module.</p>
+
+        <h4>Adding your service</h4>
+        <p>The service you need to implement has a few requirements. The most important one is that it should implement
+            the <em>module_interface</em>. To make implementing the module easier it is suggested to extend from the
+            <em>abstract_module</em> class (Which already implements the interface). The abstract module provide two
+            helper methods that can be used within your module. </p>
+        <p>The interface itself is documented within the code. Make sure to read the provided phpdoc properly, as some
+            of them look the same, but have very specific differences. All methods from the interface are required to
+            be implemented by the module, the abstract module only provides helper methods.</p>
+        <p>Once you implemented all methods, and enabled your extension, the method should show up automatically in the
+            UCP when you have done everything correctly.</p>
+    </div>
+    <div class="col-lg-4">
+        <div class="hero-unit advertising high">
+            <h2>Advertising</h2>
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <!-- phpbbextensions.io -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-8143076188868011"
+                 data-ad-slot="2640788055"
+                 data-ad-format="auto"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    </div>
+{% endblock content %}

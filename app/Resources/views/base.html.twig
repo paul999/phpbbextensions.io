@@ -26,7 +26,7 @@
 {% block navbar %}
     {% embed '@MopaBootstrap/Navbar/navbar.html.twig' with { fixedTop: true, inverse: true, id: 'navbar-example' } %}
         {% block brand %}
-            <a class="navbar-brand" href="">phpBB Extensions by Paul Sohier</a>
+            <a class="navbar-brand" href="{{ path('homepage') }}">phpBB Extensions by Paul Sohier</a>
         {% endblock %}
 
     {% endembed %}
@@ -101,5 +101,5 @@
 {% endblock foot_script %}
 
 {% block footer %}
-<p>&copy; <a href="http://www.paulsohier.nl" target="_blank">Paul Sohier</a> 2003-2015</p>
+<p>&copy; <a href="http://www.paulsohier.nl" target="_blank">Paul Sohier</a> 2003-2019</p>
 {% endblock footer %}
